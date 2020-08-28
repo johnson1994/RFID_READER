@@ -25,6 +25,32 @@ void RC522::test(){
   delete[] tmp;
 }
 
+// 读取错误标志寄存器
+unsigned char RC522::readError(){
+  unsigned char *address_list = new unsigned char[1];
+  address_list[0] = ErrorReg;
+  unsigned char *tmp = readCommand(address_list, 1);
+  unsigned char res = tmp[0];
+  delete[] tmp;
+  Serial.print("<< ErrorReg=");
+  Serial.print(res, BIN);
+  Serial.println(" >>");
+  return res;
+}
+
+// 读取版本
+unsigned char RC522::readVersion(){
+  unsigned char *address_list = new unsigned char[1];
+  address_list[0] = VersionReg;
+  unsigned char *tmp = readCommand(address_list, 1);
+  unsigned char res = tmp[0];
+  delete[] tmp;
+  Serial.print("<< VersionReg=");
+  Serial.print(res, BIN);
+  Serial.println(" >>");
+  return res; 
+}
+
 // 读寄存器
 unsigned char* RC522::readCommand(unsigned char *address_list, int len){
   Serial.println("============= reading regiester (SPI) ===============");
@@ -38,10 +64,10 @@ unsigned char* RC522::readCommand(unsigned char *address_list, int len){
   for(int i=1; i<len; i++){
     tmp = address_wrap(address_list[i], ACTION::r);
     res_list[i-1] = SPI.transfer(tmp);
-    Serial.println(res_list[i-1], HEX);
+    Serial.println(res_list[i-1], BIN);
   }
   res_list[len-1] = SPI.transfer(0x00);
-  Serial.println(res_list[len-1], HEX);
+  Serial.println(res_list[len-1], BIN);
   delete[] address_list;
 
   delay(100);
@@ -73,6 +99,6 @@ unsigned char RC522::address_wrap(unsigned char address, ACTION act){
   }
   address = 0xfe & address;
   Serial.print("address=");
-  Serial.println(address, HEX);
+  Serial.println(address, BIN);
   return address;
 }
