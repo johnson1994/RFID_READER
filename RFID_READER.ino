@@ -1,6 +1,8 @@
 #include <SPI.h>
 #include "rc522.h"
 
+// RC522模块片选引脚
+#define RC522_SS 10
 
 // rc522模块
 RC522 *rc522;
@@ -18,11 +20,11 @@ void setup() {
 //  SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0));
   
   // 初始化rc522模块
-  rc522=new RC522();
+  rc522 = new RC522(RC522_SS);
   rc522->readVersion();
   rc522->wakeUp();
   rc522->readError();
-  Serial.println("init finished");
+  Serial.println("========== init finished ============");
 }
 
 
