@@ -16,13 +16,12 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
 
   SPI.begin();
-  // 初始化SPI 16M 大端 MODE0(下降沿设置数据, 上升沿取值)
-//  SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0));
   
   // 初始化rc522模块
   rc522 = new RC522(RC522_SS);
   rc522->readVersion();
   rc522->wakeUp();
+  rc522->serialOut("CommandReg=", rc522->readRegister(rc522->RC_Register::CommandReg));
   rc522->readError();
   Serial.println("========== init finished ============");
 }
